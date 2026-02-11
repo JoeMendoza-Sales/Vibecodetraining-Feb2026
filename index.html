@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    /* Add form */
+    .add-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .add-form input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .add-form input[type="text"]:focus {
+      border-color: #4f46e5;
+    }
+
+    .add-form input[type="date"] {
+      padding: 10px 12px;
+      border: 2px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .add-form input[type="date"]:focus {
+      border-color: #4f46e5;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+
+    .btn-primary {
+      background: #4f46e5;
+      color: #fff;
+    }
+
+    .btn-save {
+      background: #16a34a;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+
+    .btn-cancel {
+      background: #6b7280;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+
+    .btn-delete {
+      background: #dc2626;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+
+    /* Todo list */
+    .todo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .todo-item {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: box-shadow 0.2s;
+    }
+
+    .todo-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .todo-item.completed .todo-text {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+
+    .todo-item.completed .todo-due {
+      color: #9ca3af;
+    }
+
+    .todo-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #4f46e5;
+      flex-shrink: 0;
+    }
+
+    .todo-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .todo-text {
+      font-size: 15px;
+      word-break: break-word;
+    }
+
+    .todo-due {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .todo-due.overdue {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .todo-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      font-size: 16px;
+      line-height: 1;
+      transition: background 0.15s;
+      color: #6b7280;
+    }
+
+    .btn-icon:hover {
+      background: #f3f4f6;
+      color: #1a1a2e;
+    }
+
+    .btn-icon.delete:hover {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    /* Edit mode */
+    .edit-form {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .edit-form input[type="text"] {
+      flex: 1;
+      min-width: 140px;
+      padding: 6px 10px;
+      border: 2px solid #4f46e5;
+      border-radius: 6px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .edit-form input[type="date"] {
+      padding: 6px 10px;
+      border: 2px solid #4f46e5;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 16px;
+      color: #9ca3af;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Todo List</h1>
+
+    <form class="add-form" id="addForm">
+      <input type="text" id="todoInput" placeholder="What needs to be done?" required>
+      <input type="date" id="dueDateInput">
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+
+    <div class="todo-list" id="todoList"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'todos';
+
+    function loadTodos() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    }
+
+    function saveTodos(todos) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const [year, month, day] = dateStr.split('-');
+      return `${month}/${day}/${year}`;
+    }
+
+    function isOverdue(dateStr) {
+      if (!dateStr) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return new Date(dateStr + 'T00:00:00') < today;
+    }
+
+    function render() {
+      const todos = loadTodos();
+      const list = document.getElementById('todoList');
+
+      if (todos.length === 0) {
+        list.innerHTML = '<div class="empty-state">No todos yet. Add one above!</div>';
+        return;
+      }
+
+      list.innerHTML = todos.map(todo => {
+        const overdue = !todo.completed && isOverdue(todo.dueDate);
+        return `
+          <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+            <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}
+              onchange="toggleTodo('${todo.id}')">
+            <div class="todo-content">
+              <div class="todo-text">${escapeHtml(todo.text)}</div>
+              ${todo.dueDate ? `<div class="todo-due ${overdue ? 'overdue' : ''}">Due: ${formatDate(todo.dueDate)}${overdue ? ' (overdue)' : ''}</div>` : ''}
+            </div>
+            <div class="todo-actions">
+              <button class="btn-icon" onclick="startEdit('${todo.id}')" title="Edit">&#9998;</button>
+              <button class="btn-icon delete" onclick="deleteTodo('${todo.id}')" title="Delete">&#10005;</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function addTodo(text, dueDate) {
+      const todos = loadTodos();
+      todos.push({
+        id: generateId(),
+        text: text.trim(),
+        dueDate: dueDate || '',
+        completed: false,
+        createdAt: new Date().toISOString()
+      });
+      saveTodos(todos);
+      render();
+    }
+
+    function deleteTodo(id) {
+      const todos = loadTodos().filter(t => t.id !== id);
+      saveTodos(todos);
+      render();
+    }
+
+    function toggleTodo(id) {
+      const todos = loadTodos().map(t =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      );
+      saveTodos(todos);
+      render();
+    }
+
+    function startEdit(id) {
+      const todos = loadTodos();
+      const todo = todos.find(t => t.id === id);
+      if (!todo) return;
+
+      const item = document.querySelector(`[data-id="${id}"]`);
+      const content = item.querySelector('.todo-content');
+      const actions = item.querySelector('.todo-actions');
+
+      content.innerHTML = '';
+      actions.innerHTML = '';
+
+      const form = document.createElement('form');
+      form.className = 'edit-form';
+      form.innerHTML = `
+        <input type="text" value="${escapeHtml(todo.text)}" required>
+        <input type="date" value="${todo.dueDate}">
+        <button type="submit" class="btn btn-save">Save</button>
+        <button type="button" class="btn btn-cancel" onclick="render()">Cancel</button>
+      `;
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        const newText = form.querySelector('input[type="text"]').value.trim();
+        const newDate = form.querySelector('input[type="date"]').value;
+        if (newText) {
+          updateTodo(id, newText, newDate);
+        }
+      };
+
+      content.appendChild(form);
+    }
+
+    function updateTodo(id, text, dueDate) {
+      const todos = loadTodos().map(t =>
+        t.id === id ? { ...t, text, dueDate } : t
+      );
+      saveTodos(todos);
+      render();
+    }
+
+    // Form handler
+    document.getElementById('addForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('todoInput');
+      const dateInput = document.getElementById('dueDateInput');
+      if (input.value.trim()) {
+        addTodo(input.value, dateInput.value);
+        input.value = '';
+        dateInput.value = '';
+        input.focus();
+      }
+    });
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
