@@ -371,6 +371,7 @@
 
     function deleteTodo(id) {
       showConfirm('Are you sure?', function(confirmed) {
+        if (!confirmed) return;
         const todos = loadTodos().filter(t => t.id !== id);
         saveTodos(todos);
         render();
