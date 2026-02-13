@@ -1,0 +1,24 @@
+{
+  "name": "vibecodetraining-feb2026",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoeMendoza-Sales/Vibecodetraining-Feb2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoeMendoza-Sales/Vibecodetraining-Feb2026/issues"
+  },
+  "homepage": "https://github.com/JoeMendoza-Sales/Vibecodetraining-Feb2026#readme",
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0"
+  }
+}
