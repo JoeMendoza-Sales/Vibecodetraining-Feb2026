@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo List</title>
+  <title>To-Do List</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -100,7 +100,7 @@
       font-size: 13px;
     }
 
-    /* Todo list */
+    /* To-do list */
     .todo-list {
       display: flex;
       flex-direction: column;
@@ -282,7 +282,7 @@
 </head>
 <body>
   <div class="app">
-    <h1>Todo List</h1>
+    <h1>To-Do List</h1>
 
     <form class="add-form" id="addForm">
       <input type="text" id="todoInput" placeholder="What needs to be done?" required>
@@ -327,7 +327,7 @@
       const list = document.getElementById('todoList');
 
       if (todos.length === 0) {
-        list.innerHTML = '<div class="empty-state">No todos yet. Add one above!</div>';
+        list.innerHTML = '<div class="empty-state">No to-dos yet. Add one above!</div>';
         return;
       }
 
